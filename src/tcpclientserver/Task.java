@@ -11,6 +11,6 @@ package tcpclientserver;
  */
 public interface Task
 {
-    public String viewDetails();
-    public void calculateCost();
+    public String getResult();
+    public void executeTask();
 }

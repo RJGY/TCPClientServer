@@ -38,12 +38,14 @@ public class Book implements Task, Serializable {
     }
 
     //implement the method from the interface
-    public String viewDetails() {
+    @Override
+    public String getResult() {
         return  String.format("Title:%s \nNumber of pages:%d \nTotal cost:$%.2f",title,nbrPages,cost);
     }
     
     //implement the method from the interface
-    public void calculateCost() {
+    @Override
+    public void executeTask() {
         final double COST_PER_PAGE = 0.15;
 
         cost = nbrPages*COST_PER_PAGE;
