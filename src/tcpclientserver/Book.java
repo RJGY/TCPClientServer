@@ -11,7 +11,8 @@ package tcpclientserver;
  */
 import java.io.Serializable;
 
-//Book class implements Task interface and Serializable
+// Book class implements Task interface and Serializable
+// Test class.
 public class Book implements Task, Serializable {
     private String title;
     private int nbrPages;
@@ -37,13 +38,13 @@ public class Book implements Task, Serializable {
         this.title = title;
     }
 
-    //implement the method from the interface
+    // Implement the method from the interface
     @Override
     public String getResult() {
         return  String.format("Title:%s \nNumber of pages:%d \nTotal cost:$%.2f",title,nbrPages,cost);
     }
     
-    //implement the method from the interface
+    // Implement the method from the interface
     @Override
     public void executeTask() {
         final double COST_PER_PAGE = 0.15;

@@ -18,6 +18,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+// Each connection made from a client and the server makes a connection.
 public class Connection extends Thread {
 
     private ObjectInputStream in;
@@ -26,17 +27,21 @@ public class Connection extends Thread {
     private PublicKey pubKey;
     private PrivateKey privKey;
     private DatabaseConnection db;
+    // Database name is: Assignment2DB
     private String url = "jdbc:derby://localhost:1527/Assignment2DB";
 
     public Connection(PublicKey pubKey, PrivateKey prKey, Socket aClientSocket) {
         try {
             this.pubKey = pubKey;
             this.privKey = prKey;
+            // Connect to client.
             clientSocket = aClientSocket;
             in = new ObjectInputStream(clientSocket.getInputStream());
             out = new ObjectOutputStream(clientSocket.getOutputStream());
+            // Connect to database.
             db = new DatabaseConnection(url);
             
+            // Start thread.
             this.start();
             
         } catch(IOException e) {
@@ -44,30 +49,32 @@ public class Connection extends Thread {
         }
     }
 
+    @Override
     public void run(){
         try {
             // Write out the public key to client.
             out.writeObject(pubKey);
             
-            //keep computing the objects sent from the client
+            // Keep computing the objects sent from the client.
             while(true) {
-                
+                // Read in client encoded username and password.
                 byte [] encodedmessage = (byte[])in.readObject();
                 String message = Cryptography.decrypt(privKey, encodedmessage);
                 String[] splitMessage = message.split(":");
                 String userID = splitMessage[0];
                 String password = splitMessage[1];
+                // Check username first, then username and password.
                 if (db.checkUser(userID)) {
                     if (db.checkLogin(userID, password)) {
                         // Successfully logged in.
                         out.writeObject(0);
                     } else {
-                        // Incorrect Password
+                        // Incorrect Password, go back to top of loop.
                         out.writeObject(1);
                         continue;
                     }
                 } else {
-                    // Incorrect Username
+                    // Incorrect Username, go back to top of loop.
                     out.writeObject(2);
                     continue;
                 }
@@ -79,9 +86,10 @@ public class Connection extends Thread {
                     // Compute tasks/maths
                     t.executeTask();
 
-                    // write the object back to the stream.
+                    // Write the object back to the client.
                     out.writeObject(t);
-
+                    
+                    // Log to screen what type of task was executed.
                     if(t instanceof Fibonacci){
                         System.out.println("Fibonnaci task received and computed.");
                     } else if (t instanceof Factorial) {
@@ -91,9 +99,9 @@ public class Connection extends Thread {
                     }
                 }
             }
-
+        // Catch Errors
         } catch (EOFException e) { 
-            System.out.println("EOF: " + e.getMessage());
+            System.out.println("Closed connection.");
         } catch (IOException e) {
             System.out.println("readline: " + e.getMessage());
         } catch (ClassNotFoundException ex) {

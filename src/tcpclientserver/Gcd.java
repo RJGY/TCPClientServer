@@ -11,11 +11,14 @@ import java.io.Serializable;
  *
  * @author Alerz
  */
+// GCD helper class. 
+// Calculates the gcd of 2 numbers.
 public class Gcd implements Task, Serializable {
     private int num1;
     private int num2;
     private String result;
     
+    // Constructor.
     public Gcd (int num1, int num2) {
         this.num1 = num1;
         this.num2 = num2;

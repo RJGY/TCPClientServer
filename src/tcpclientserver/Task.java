@@ -9,6 +9,7 @@ package tcpclientserver;
  *
  * @author Alerz
  */
+// Task interface for implementation.
 public interface Task
 {
     public String getResult();

@@ -12,10 +12,13 @@ import java.math.BigInteger;
  *
  * @author Alerz
  */
+// Helper Factorial class.
+// Finds the factorial number of a number.
 public class Factorial implements Task, Serializable{
     private int num;
     private String result;
     
+    // Constructor.
     public Factorial(int num) {
         this.num = num;
     }

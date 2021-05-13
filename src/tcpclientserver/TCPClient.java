@@ -31,23 +31,25 @@ public class TCPClient {
         String name = null;
         
         try {
-            // bind the socket with the server name and port number
+            // Bind the socket with the server name and port number
             s = new Socket(SERVER_NAME, PORT_NUMBER);
             
-            //establish inout and output streams
+            // Establish object in and output streams
             ObjectInputStream in = null;
             ObjectOutputStream out = null;
 
             out = new ObjectOutputStream(s.getOutputStream());
             in = new ObjectInputStream( s.getInputStream());
             
-            
+            // Recieve publicKey as object and cast it to PublicKey
+            // Save bytecode of public key to object.
             publicKey = (PublicKey)in.readObject();
             bytesPublicKey = publicKey.getEncoded();
-            //Scanner instance to receive user input
+            
+            // Scanner instance to receive user input
             Scanner sa = new Scanner(System.in);
 
-            //client is engaged with the server until he chooses to exit
+            // Client is engaged with the server until he chooses to exit
             OUTER: while(true)
             {   
                 System.out.println("Enter Username: ");
@@ -62,12 +64,20 @@ public class TCPClient {
                     System.out.println("Password must be entered");
                     continue;
                 }
+                
+                // Combine message into one string with delimiter.
                 String message = userName + ":" + password;
+                
+                // Get specification and encode message.
                 X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(bytesPublicKey);
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
                 publicKey = keyFactory.generatePublic(pubKeySpec);
                 byte[] encodedmessage = Cryptography.encrypt(publicKey, message);
+                
+                // Send the encoded username and password.
                 out.writeObject(encodedmessage);
+                
+                // Receive response as integer.
                 switch ((int)in.readObject()) {
                     case 0:
                         System.out.println("**********Success***********");
@@ -82,9 +92,11 @@ public class TCPClient {
                             System.out.println("4. Exit");
                             System.out.println("*********************");
                             System.out.println("Enter your option: ");
-                            //reads input as integer
+                            
+                            // Reads input as integer
                             int choice = sa.nextInt();
-
+                                
+                            // Choice in switch for readability.
                             switch (choice) {
                                 case 1:
                                     // Factorial
@@ -126,10 +138,10 @@ public class TCPClient {
                                     int num2 = sa.nextInt();
                                     Task gcd = new Gcd(num1,num2);
 
-                                    //write object ot the server
+                                    // Write object to Server to execute task for us.
                                     out.writeObject(gcd);
 
-                                    //read object sent by the server
+                                    // Read object back in.
                                     gcd = (Task)in.readObject();
 
                                     System.out.println("The Received Fibonacci Details:");
@@ -139,6 +151,7 @@ public class TCPClient {
                                     break;
                                 case 4:
                                     System.out.println("Exiting System.");
+                                    // Breaks out of whole loop.
                                     break OUTER;
                                 default:
                                     System.out.println("Incorrect input. Try again.");

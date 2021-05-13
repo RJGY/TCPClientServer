@@ -29,9 +29,10 @@ public class TCPServer {
             PrivateKey prKey = keyPair.getPrivate();
             while(true) {
                 Socket clientSocket = listenSocket.accept();
-                // creates a new thread to deal with each client(Thread-per-connection)
+                // Creates a new thread to deal with each client(Thread-per-connection)
                 Connection c = new Connection(pubKey, prKey, clientSocket);
             }
+        // Catch errors.
         } catch(IOException e) {
             System.out.println("Socket Error: " + e.getMessage());
         } catch (NoSuchAlgorithmException ex) {

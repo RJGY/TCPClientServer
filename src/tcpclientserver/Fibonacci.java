@@ -11,10 +11,13 @@ import java.io.Serializable;
  *
  * @author Alerz
  */
+// Helper fibonacci class.
+// Finds the fibonacci of a given range.
 public class Fibonacci implements Task, Serializable {
     private int num;
     private String result;
     
+    // Constructor.
     public Fibonacci(int num) {
         this.num = num;
     }

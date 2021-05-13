@@ -5,6 +5,11 @@
  */
 package tcpclientserver;
 
+/**
+ *
+ * @author Alerz
+ */
+
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,13 +20,11 @@ public class DatabaseConnection {
     private ResultSet rs;
     private java.sql.Connection connection;
     
-    private static final String USERNAME = "APP";
-    private static final String PASSWORD = "APP"; 
-    
+    // Constructor.
     public DatabaseConnection(String url) {
         try {
-            connection =
-            DriverManager.getConnection( url );
+            // Connection does not require username or password, only url.
+            connection = DriverManager.getConnection( url );
             queryCheckUser = connection.prepareStatement("SELECT USERID FROM USERS WHERE USERID = ?");
             queryCheckPassword = connection.prepareStatement("SELECT USERID FROM USERS WHERE USERID = ? AND USERPASSWORD = ?");
         } catch (SQLException ex) {
@@ -29,12 +32,14 @@ public class DatabaseConnection {
         }
     }
     
+    // Checkuser query
     public boolean checkUser(String userID) {
         rs = null;
         boolean result = false; 
         try {
             queryCheckUser.setString(1, userID);
             rs = queryCheckUser.executeQuery();
+            // If a match is returned, return true otherwise false.
             if (rs.next() ) {
                 result = true;
             } else {
@@ -51,19 +56,22 @@ public class DatabaseConnection {
             {
                sqlException.printStackTrace();
                close();
-            } // end catch
-        } // end finally
+            } 
+        } 
         
         return result;
     }
     
+    // Check login query.
     public boolean checkLogin(String userID, String password) {
         rs = null;
         boolean result = false; 
         try {
+            // Set parameters
             queryCheckPassword.setString(1, userID);
             queryCheckPassword.setString(2, password);
             rs = queryCheckPassword.executeQuery();
+            // If a match is returned, return true otherwise false.
             if (rs.next()) {
                 result = true;
             } else {
